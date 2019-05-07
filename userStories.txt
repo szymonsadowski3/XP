@@ -1,0 +1,4 @@
+Klient chce mieć możliwość rejestracji użytkowników
+Klient chce mieć możliwośc awaryjnego wylalczenia systemu
+Klient chce miec gromadzoone dane nt. zarejestrowanych uzytkownikow
+Klient chce zeby dostep do pomieszczenia zablokowanego czytnikiem byl niemozliwy bez odbicia karty

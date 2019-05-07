@@ -14,3 +14,10 @@ class DatabaseAccess:
 
         return filtered_users[0] if (len(filtered_users) > 0) else None
 
+    def remove_user(self, username_of_user_to_remove):
+        self.users = [user for user in self.users if user.username != username_of_user_to_remove]
+
+    def clear_database(self):
+        self.users = []
+        self.cards = []
+
