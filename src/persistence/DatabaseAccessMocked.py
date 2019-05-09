@@ -1,4 +1,4 @@
-class DatabaseAccess:
+class DatabaseAccessMocked:
     def __init__(self):
         self.users = []
         self.cards = []
