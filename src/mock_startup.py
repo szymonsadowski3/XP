@@ -12,5 +12,5 @@ def start():
 
     while True:
         toggle(pin)
-        time.sleep_ms(200)
+        time.sleep_ms(500)
  
