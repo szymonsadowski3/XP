@@ -1,3 +1,7 @@
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "/../src")
+
 import unittest
 
 from models.User import User
@@ -6,7 +10,7 @@ from persistence.DatabaseAccess import DatabaseAccess
 
 class TestUserRegistration(unittest.TestCase):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super(TestUserRegistration, self).__init__(*args, **kwargs)
         self.database_access = None
 
     def setUp(self):

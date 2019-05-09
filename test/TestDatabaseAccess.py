@@ -1,9 +1,12 @@
-import random
-import string
-import unittest
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "/../src")
 
-from models.User import User
 from persistence.DatabaseAccess import DatabaseAccess
+from models.User import User
+import unittest
+import string
+import random
 
 
 class TestUtils:
@@ -11,7 +14,8 @@ class TestUtils:
 
     @classmethod
     def get_next_user(cls):
-        username = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
+        username = ''.join(random.choice(
+            string.ascii_uppercase + string.digits) for _ in range(10))
         user = User(username, TestUtils.current_user_id)
         TestUtils.current_user_id += 1
         return user
@@ -19,7 +23,7 @@ class TestUtils:
 
 class TestDatabaseAccess(unittest.TestCase):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super(TestDatabaseAccess, self).__init__(*args, **kwargs)
         self.database_access = None
 
     def setUp(self):
@@ -30,7 +34,8 @@ class TestDatabaseAccess(unittest.TestCase):
 
         self.database_access.add_user(user_to_add)
 
-        user_from_database = self.database_access.get_user_by_username(user_to_add.username)
+        user_from_database = self.database_access.get_user_by_username(
+            user_to_add.username)
 
         self.assertEqual(user_to_add.username, user_from_database.username)
         self.assertEqual(user_to_add.card_id, user_from_database.card_id)
@@ -42,7 +47,8 @@ class TestDatabaseAccess(unittest.TestCase):
     def test_returns_user(self):
         testUser = TestUtils.get_next_user()
         self.database_access.add_user(testUser)
-        returnedUser = self.database_access.get_user_by_username(testUser.username)
+        returnedUser = self.database_access.get_user_by_username(
+            testUser.username)
         self.assertEqual(testUser, returnedUser)
 
     def test_returns_empty_list_when_empty(self):
