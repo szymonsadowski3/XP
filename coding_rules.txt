@@ -10,6 +10,14 @@ Files splitting
 =============
 One file per class
 
+
+Comments
+=============
+Put comments when:
+- part of code is commented out
+- code is doing important thing
+
+
 Code Lay-out
 ============
 
