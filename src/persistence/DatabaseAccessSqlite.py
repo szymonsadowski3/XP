@@ -26,15 +26,21 @@ class DatabaseAccessSqlite:
                  .select()
                  .where(User.username == username))
 
-        return list(query)[0]
-    #
-    # def get_all_users(self):
-    #     return self.users
+        records = list(query)
+
+        return records[0] if len(records) > 0 else None
+
+    def get_all_users(self):
+        return list(User.select())
     #
     # def remove_user(self, username_of_user_to_remove):
     #     self.users = [user for user in self.users if user.username != username_of_user_to_remove]
     #
-    # def clear_database(self):
-    #     self.users = []
-    #     self.cards = []
+    def clear_database(self):
+        delete_query = Card.delete()
+        delete_query.execute()
+        delete_query = Room.delete()
+        delete_query.execute()
+        delete_query = User.delete()
+        delete_query.execute()
 

@@ -42,11 +42,10 @@ class TestDatabaseAccess(unittest.TestCase):
         self.assertEqual(returnValue, None)
 
     def test_returns_user(self):
-        testUser = TestUtils.get_random_username()
-        self.database_access.add_user(testUser)
-        returnedUser = self.database_access.get_user_by_username(
-            testUser.username)
-        self.assertEqual(testUser, returnedUser)
+        random_username = TestUtils.get_random_username()
+        self.database_access.add_user(random_username)
+        returned_user = self.database_access.get_user_by_username(random_username)
+        self.assertEqual(random_username, returned_user.username)
 
     def test_returns_empty_list_when_empty(self):
         self.database_access.clear_database()
