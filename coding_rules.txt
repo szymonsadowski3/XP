@@ -11,6 +11,7 @@ Files splitting
 
 One file per class
 Separate config to .py files
+Tests should be contained under separate "test" folders.
 
 Code Lay-out
 ============
