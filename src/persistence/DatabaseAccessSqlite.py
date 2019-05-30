@@ -32,10 +32,11 @@ class DatabaseAccessSqlite:
 
     def get_all_users(self):
         return list(User.select())
-    #
+
+    # TODO: Removing users to be implemented.
     # def remove_user(self, username_of_user_to_remove):
     #     self.users = [user for user in self.users if user.username != username_of_user_to_remove]
-    #
+
     def clear_database(self):
         delete_query = Card.delete()
         delete_query.execute()
@@ -43,4 +44,3 @@ class DatabaseAccessSqlite:
         delete_query.execute()
         delete_query = User.delete()
         delete_query.execute()
-
