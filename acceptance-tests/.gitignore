@@ -1,0 +1,8 @@
+node_modules
+
+FitNesseRoot/**/*.zip
+FitNesseRoot/**/properties
+FitNesseRoot/**/*.xml
+FitNesseRoot/**/*.txt
+FitNesseRoot/**/*.wiki
+!FitNesseRoot/FrontPage/*.wiki
