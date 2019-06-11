@@ -3,7 +3,7 @@ import socket
 import pywifi
 from pywifi import const
 
-from client.client_config import CLIENT_CONFIG
+from client_config import CLIENT_CONFIG
 
 
 wifi = pywifi.PyWiFi()
@@ -37,10 +37,15 @@ for wifi in wifis:
             try:
                 client_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
                 client_socket.connect((CLIENT_CONFIG['HOST'], CLIENT_CONFIG['PORT']))
-                client_socket.sendall(b'OPEN THE DOOR!')
-
-                data = client_socket.recv(16)
-                print(data.decode())
+                command = 1
+                while(True):
+                    print("Write command:")
+                    command = input() 
+                    if(command == "exit"):
+                        break
+                    client_socket.sendall(command.encode())
+                    data = client_socket.recv(1024)
+                    print("Response :" + data.decode())
 
             except Exception as e:
                 print(e)

@@ -2,6 +2,7 @@ import machine
 import time
 import socket
 import network
+from src.configuration import USERS,ADMINS
 
 HOST = '192.168.0.4'
 PORT = 8888
@@ -19,6 +20,7 @@ def start():
 
     while True:
         print(ap_if.isconnected())
+        time.sleep(1)
         if(ap_if.isconnected()):
             try:
                 conn, addr = server_socket.accept()
@@ -26,13 +28,9 @@ def start():
                 while True:
                     data = conn.recv(1024)
                     if not data:
-                        break
-                    print(data.decode())
-                    conn.sendall(b'Door opened.')
-                    pin.on()
-                    time.sleep(2)
-                    pin.off()
-                    break
+                        continue
+                    response = analyzeMessage(data.decode())
+                    conn.sendall(response.encode())
             except Exception as e:
                 print(str(e))
                 continue
@@ -55,3 +53,31 @@ def setupAP():
     print("AP state = " + str(ap_if.active()))
 
     return ap_if
+
+def analyzeMessage(message):
+    temp = message.split(';')
+    command = temp[0]
+    if(command == "OPEN"):
+        if(int(temp[1]) in (USERS or ADMINS)):
+            return("DOOR OPENED")
+        else:
+            return("ACCESS DENIED")
+
+    elif(command == "ADD_USER"):
+        if(int(temp[1]) in ADMINS and int(temp[2]) not in USERS):
+            USERS.append(int(temp[2]))
+            return("USER ADDED")
+        else:
+            return("ACCESS DENIED OR USER ALREADY IN DATABASE")
+
+    elif(command == "REMOVE_USER"):
+        if(int(temp[1]) in ADMINS and int(temp[2]) in USERS):
+            USERS.remove(int(temp[2]))
+            return("USER REMOVED")
+        else:
+            return("ACCESS DENIED OR USER DONT EXISTS IN DATABASE")
+
+    else:
+        return("COMMAND NOT FOUND : " + command)
+
+
