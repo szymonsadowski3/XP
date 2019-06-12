@@ -1,3 +1,6 @@
+import datetime
+
+from src.models.Log import Log
 from src.models.User import User
 
 
@@ -42,16 +45,23 @@ class MicroDatabaseAccess:
         user.is_admin = should_user_be_admin_now
 
     def add_log(self, message, level=None, source=None):
-        pass
+        log_to_add = Log(message, level, source)
+        self.logs.append(log_to_add)
 
     def get_all_logs(self):
-        pass
+        return self.logs
 
     def get_all_logs_by_level(self, level):
-        pass
+        return [log for log in self.logs if log.level == level]
 
     def get_all_logs_by_source(self, source):
-        pass
+        return [log for log in self.logs if log.source == source]
 
     def get_all_logs_by_time_range(self, timestamp1, timestamp2):
-        pass
+        datetime_format = '%Y-%m-%d %H:%M:%S'
+        dt1 = datetime.datetime.strptime(timestamp1, datetime_format)
+        dt2 = datetime.datetime.strptime(timestamp2, datetime_format)
+
+        return [log for log in self.logs if
+                dt1 <= datetime.datetime.strptime(log.timestamp, datetime_format) <= dt2
+                ]
