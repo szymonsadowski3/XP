@@ -2,7 +2,7 @@ import machine
 import time
 import socket
 import network
-from src.configuration import USERS,ADMINS
+from src.configuration import USERS, ADMINS
 
 HOST = '192.168.0.4'
 PORT = 8888
@@ -60,6 +60,7 @@ def setupAP():
 
     return ap_if
 
+
 def analyzeMessage(message):
     temp = message.split(';')
     command = temp[0]
@@ -86,6 +87,7 @@ def analyzeMessage(message):
     else:
         return("COMMAND NOT FOUND : " + command)
 
+
 def login(user):
     global LOGGED_USER
     if(int(user) in (USERS or ADMINS)):
@@ -93,6 +95,3 @@ def login(user):
         return "SUCCESS"
     else:
         return "FAILED"
-
-
-

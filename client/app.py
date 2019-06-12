@@ -36,14 +36,16 @@ for wifi in wifis:
         if(iface.status() == const.IFACE_CONNECTED):
             print("Connected to " + wifi.ssid)
             try:
-                client_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-                client_socket.connect((CLIENT_CONFIG['HOST'], CLIENT_CONFIG['PORT']))
+                client_socket = socket.socket(
+                    socket.AF_INET, socket.SOCK_STREAM)
+                client_socket.connect(
+                    (CLIENT_CONFIG['HOST'], CLIENT_CONFIG['PORT']))
                 command = 1
                 user_logged = False
                 while(True):
                     if(user_logged):
                         print("Write command:")
-                        command = input() 
+                        command = input()
                         if(command == "exit"):
                             break
                         client_socket.sendall(command.encode())
@@ -60,8 +62,3 @@ for wifi in wifis:
             except Exception as e:
                 print(e)
             iface.disconnect()
-
-
-
-        
-
