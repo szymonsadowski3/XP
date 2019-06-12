@@ -2,6 +2,7 @@ import datetime
 
 from src.models.Log import Log
 from src.models.User import User
+from src.utils.constants import default_date_time_format
 
 
 class MicroDatabaseAccess:
@@ -58,10 +59,10 @@ class MicroDatabaseAccess:
         return [log for log in self.logs if log.source == source]
 
     def get_all_logs_by_time_range(self, timestamp1, timestamp2):
-        datetime_format = '%Y-%m-%d %H:%M:%S'
-        dt1 = datetime.datetime.strptime(timestamp1, datetime_format)
-        dt2 = datetime.datetime.strptime(timestamp2, datetime_format)
+        dt1 = datetime.datetime.strptime(timestamp1, default_date_time_format)
+        dt2 = datetime.datetime.strptime(timestamp2, default_date_time_format)
 
-        return [log for log in self.logs if
-                dt1 <= datetime.datetime.strptime(log.timestamp, datetime_format) <= dt2
-                ]
+        return [
+            log for log in self.logs
+            if dt1 <= datetime.datetime.strptime(log.timestamp, default_date_time_format) <= dt2
+        ]

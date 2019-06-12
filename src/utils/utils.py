@@ -1,8 +1,10 @@
 from datetime import datetime
 
+from src.utils.constants import default_date_time_format
+
 
 def get_current_date():
-    return datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    return datetime.now().strftime(default_date_time_format)
 
 
 class DatetimeRange:
