@@ -10,19 +10,24 @@ import random
 class TestDoorLock(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super(TestDoorLock, self).__init__(*args, **kwargs)
-        self.lock = None
+        self.door_lock = None
 
     def setUp(self):
-        self.lock = MockedDoorLock()
+        self.door_lock = MockedDoorLock()
 
     def test_door_open_by_default(self):
-        pass
+        self.assertTrue(self.door_lock.is_locked)
     
-    def test_door_opens(self):
-        pass
+    def test_door_unlock(self):
+        self.door_lock.is_locked = True
+        self.door_lock.unlock()
+        self.assertFalse(self.door_lock.is_locked)
 
-    def test_door_closes(self):
-        pass
+    def test_door_lock(self):
+        self.door_lock.is_locked = False
+        self.door_lock.lock()
+        self.assertTrue(self.door_lock.is_locked)
+
 
     
     
