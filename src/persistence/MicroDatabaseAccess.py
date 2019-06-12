@@ -6,6 +6,7 @@ class MicroDatabaseAccess:
 
     def __init__(self):
         self.users = []
+        self.logs = []
 
     def add_user(self, username_to_add, is_admin=False):
         id_to_assign = MicroDatabaseAccess.id_sequence_current_value
@@ -39,3 +40,18 @@ class MicroDatabaseAccess:
     def change_admin_rights_by_id(self, user_id, should_user_be_admin_now):
         user = self.get_user_by_id(user_id)
         user.is_admin = should_user_be_admin_now
+
+    def add_log(self, message, level=None, source=None):
+        pass
+
+    def get_all_logs(self):
+        pass
+
+    def get_all_logs_by_level(self, level):
+        pass
+
+    def get_all_logs_by_source(self, source):
+        pass
+
+    def get_all_logs_by_time_range(self, timestamp1, timestamp2):
+        pass

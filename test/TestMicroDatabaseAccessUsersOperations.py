@@ -21,9 +21,9 @@ class TestUtils:
         return user
 
 
-class TestMicroDatabaseAccess(unittest.TestCase):
+class TestMicroDatabaseAccessUsersOperations(unittest.TestCase):
     def __init__(self, *args, **kwargs):
-        super(TestMicroDatabaseAccess, self).__init__(*args, **kwargs)
+        super(TestMicroDatabaseAccessUsersOperations, self).__init__(*args, **kwargs)
         self.database_access = None
 
     def setUp(self):
