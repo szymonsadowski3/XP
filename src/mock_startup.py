@@ -3,10 +3,12 @@ import time
 import socket
 import network
 from src.configuration import USERS, ADMINS
+from src.persistence.MicroDatabaseAccess import MicroDatabaseAccess
 
 HOST = '192.168.0.4'
 PORT = 8888
 LOGGED_USER = None
+databaseAccess = MicroDatabaseAccess()
 
 
 def start():
@@ -35,7 +37,7 @@ def start():
                     if LOGGED_USER is not None:
                         response = analyze_message(data.decode())
                     else:
-                        response = login(data)
+                        response = identify(data.decode())
                     conn.sendall(response.encode())
             except Exception as e:
                 print(str(e))
@@ -62,36 +64,49 @@ def setup_ap():
 
 
 def analyze_message(message):
+    global LOGGED_USER,databaseAccess
     temp = message.split(';')
     command = temp[0]
     if command == "OPEN":
-        if int(LOGGED_USER) in (USERS or ADMINS):
-            return "DOOR OPENED"
+        databaseAccess.add_log("Door opened by user: " + LOGGED_USER.username,"INFO")
+        return "DOOR OPENED"
+        
+    elif command == "ADD_USER" and len(temp) > 1:
+        if LOGGED_USER.is_admin:
+            databaseAccess.add_user(temp[1])
+            databaseAccess.add_log("Added user: " + str(temp[1]) + " by: " + LOGGED_USER.username)
+            return "USER ADDED"
         else:
             return "ACCESS DENIED"
 
-    elif command == "ADD_USER":
-        if int(LOGGED_USER) in ADMINS and int(temp[1]) not in USERS:
-            USERS.append(int(temp[1]))
-            return "USER ADDED"
-        else:
-            return "ACCESS DENIED OR USER ALREADY IN DATABASE"
-
-    elif command == "REMOVE_USER":
-        if int(LOGGED_USER) in ADMINS and int(temp[1]) in USERS:
-            USERS.remove(int(temp[1]))
+    elif command == "REMOVE_USER" and len(temp) > 1:
+        if LOGGED_USER.is_admin:
+            databaseAccess.remove_user_by_username(temp[1])
+            databaseAccess.add_log("Removed user: " + str(temp[1]) + " by: " + LOGGED_USER.username)
             return "USER REMOVED"
         else:
-            return "ACCESS DENIED OR USER DONT EXISTS IN DATABASE"
+            return "ACCESS DENIED"
 
+    elif command == "GET_ALL_LOGS":
+        if LOGGED_USER.is_admin:
+            string_to_send = ""
+            logs = databaseAccess.get_all_logs()
+            print(str(logs))
+            for log in logs:
+                string_to_send += str(log.message) + " " + str(log.level) + " " + str(log.source) + " " + str(log.timestamp) + "\n"
+                
+            databaseAccess.add_log("All logs get by: " + LOGGED_USER.username)
+            return string_to_send
+        else:
+            return "ACCESS DENIED"
     else:
         return "COMMAND NOT FOUND : " + command
 
 
-def login(user):
-    global LOGGED_USER
-    if int(user) in (USERS or ADMINS):
-        LOGGED_USER = user
+def identify(user):
+    global LOGGED_USER,databaseAccess
+    LOGGED_USER = databaseAccess.get_user_by_username(user)
+    if LOGGED_USER != None:
         return "SUCCESS"
     else:
         return "FAILED"

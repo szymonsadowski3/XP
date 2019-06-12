@@ -2,15 +2,14 @@ import utime
 
 from src.models.Log import Log
 from src.models.User import User
-from src.utils.constants import default_date_time_format
-
 
 class MicroDatabaseAccess:
-    id_sequence_current_value = 0
+    id_sequence_current_value = 1
 
     def __init__(self):
         self.users = []
         self.logs = []
+        self.users.append(User("Admin",0,True))
 
     def add_user(self, username_to_add, is_admin=False):
         id_to_assign = MicroDatabaseAccess.id_sequence_current_value
@@ -57,3 +56,12 @@ class MicroDatabaseAccess:
 
     def get_all_logs_by_source(self, source):
         return [log for log in self.logs if log.source == source]
+
+    # def get_all_logs_by_time_range(self, timestamp1, timestamp2):
+    #     dt1 = datetime.datetime.strptime(timestamp1, default_date_time_format)
+    #     dt2 = datetime.datetime.strptime(timestamp2, default_date_time_format)
+
+    #     return [
+    #         log for log in self.logs
+    #         if dt1 <= datetime.datetime.strptime(log.timestamp, default_date_time_format) <= dt2
+    #     ]
