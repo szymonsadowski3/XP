@@ -6,10 +6,18 @@ Test
 !define COMMAND_PATTERN {node C:\Users\Bartek\studia\fitnesse-node\node_modules\slimjs\src\SlimJS %p}
 !define SLIM_PORT {9086}
 
-!path C:\Users\Bartek\studia\fitnesse-node\tests
+!path C:\Users\Bartek\studia\xp\acceptance-tests\tests
 
 |import      |
 |server-tests|
+
+
+Connect
+
+|wifi            |
+|ssid|pwd|connect?|
+|DOOR|pwd|ok|
+
 
 When user is not logged in
 |xp.Server       |
