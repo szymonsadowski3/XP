@@ -20,4 +20,3 @@ class DatabaseAccess:
     def clear_database(self):
         self.users = []
         self.cards = []
-

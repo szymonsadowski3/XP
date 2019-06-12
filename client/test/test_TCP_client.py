@@ -4,6 +4,7 @@ import socket
 from client_test_config import CLIENT_CONFIG
 from MockTCPServer import MockTCPServer
 
+
 class TestTCPClient(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super(TestTCPClient, self).__init__(*args, **kwargs)

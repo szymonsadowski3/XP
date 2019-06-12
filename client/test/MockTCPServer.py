@@ -3,6 +3,7 @@ import time
 import unittest
 from client_test_config import CLIENT_CONFIG
 
+
 class MockTCPServer:
     def run(self):
         server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

@@ -41,15 +41,15 @@ class TestDatabaseAccess(unittest.TestCase):
         self.assertEqual(user_to_add.card_id, user_from_database.card_id)
 
     def test_querying_missing_user_returns_none(self):
-        returnValue = self.database_access.get_user_by_username("SomeUser")
-        self.assertEqual(returnValue, None)
+        return_value = self.database_access.get_user_by_username("SomeUser")
+        self.assertEqual(return_value, None)
 
     def test_returns_user(self):
-        testUser = TestUtils.get_next_user()
-        self.database_access.add_user(testUser)
-        returnedUser = self.database_access.get_user_by_username(
-            testUser.username)
-        self.assertEqual(testUser, returnedUser)
+        test_user = TestUtils.get_next_user()
+        self.database_access.add_user(test_user)
+        returned_user = self.database_access.get_user_by_username(
+            test_user.username)
+        self.assertEqual(test_user, returned_user)
 
     def test_returns_empty_list_when_empty(self):
         self.database_access.clear_database()
@@ -74,8 +74,8 @@ class TestDatabaseAccess(unittest.TestCase):
         username = user_to_add.username
         self.database_access.add_user(user_to_add)
         self.database_access.remove_user(username)
-        returnValue = self.database_access.get_user_by_username(username)
-        self.assertEqual(returnValue, None)
+        return_value = self.database_access.get_user_by_username(username)
+        self.assertEqual(return_value, None)
 
 
 if __name__ == '__main__':

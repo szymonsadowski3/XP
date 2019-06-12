@@ -11,7 +11,7 @@ LOGGED_USER = None
 
 def start():
     global LOGGED_USER
-    ap_if = setupAP()
+    ap_if = setup_ap()
 
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_socket.bind((HOST, PORT))
@@ -24,7 +24,7 @@ def start():
         print(ap_if.isconnected())
         LOGGED_USER = None
         time.sleep(1)
-        if(ap_if.isconnected()):
+        if ap_if.isconnected():
             try:
                 conn, addr = server_socket.accept()
                 print('Connected by', addr)
@@ -32,8 +32,8 @@ def start():
                     data = conn.recv(1024)
                     if not data:
                         continue
-                    if(LOGGED_USER != None):
-                        response = analyzeMessage(data.decode())
+                    if LOGGED_USER is not None:
+                        response = analyze_message(data.decode())
                     else:
                         response = login(data)
                     conn.sendall(response.encode())
@@ -43,7 +43,7 @@ def start():
                 time.sleep(1)
 
 
-def setupAP():
+def setup_ap():
     ap_if = network.WLAN(network.AP_IF)
 
     ap_if.config(essid="DOOR 1")
@@ -61,36 +61,36 @@ def setupAP():
     return ap_if
 
 
-def analyzeMessage(message):
+def analyze_message(message):
     temp = message.split(';')
     command = temp[0]
-    if(command == "OPEN"):
-        if(int(LOGGED_USER) in (USERS or ADMINS)):
-            return("DOOR OPENED")
+    if command == "OPEN":
+        if int(LOGGED_USER) in (USERS or ADMINS):
+            return "DOOR OPENED"
         else:
-            return("ACCESS DENIED")
+            return "ACCESS DENIED"
 
-    elif(command == "ADD_USER"):
-        if(int(LOGGED_USER) in ADMINS and int(temp[1]) not in USERS):
+    elif command == "ADD_USER":
+        if int(LOGGED_USER) in ADMINS and int(temp[1]) not in USERS:
             USERS.append(int(temp[1]))
-            return("USER ADDED")
+            return "USER ADDED"
         else:
-            return("ACCESS DENIED OR USER ALREADY IN DATABASE")
+            return "ACCESS DENIED OR USER ALREADY IN DATABASE"
 
-    elif(command == "REMOVE_USER"):
-        if(int(LOGGED_USER) in ADMINS and int(temp[1]) in USERS):
+    elif command == "REMOVE_USER":
+        if int(LOGGED_USER) in ADMINS and int(temp[1]) in USERS:
             USERS.remove(int(temp[1]))
-            return("USER REMOVED")
+            return "USER REMOVED"
         else:
-            return("ACCESS DENIED OR USER DONT EXISTS IN DATABASE")
+            return "ACCESS DENIED OR USER DONT EXISTS IN DATABASE"
 
     else:
-        return("COMMAND NOT FOUND : " + command)
+        return "COMMAND NOT FOUND : " + command
 
 
 def login(user):
     global LOGGED_USER
-    if(int(user) in (USERS or ADMINS)):
+    if int(user) in (USERS or ADMINS):
         LOGGED_USER = user
         return "SUCCESS"
     else:

@@ -19,7 +19,7 @@ time.sleep(CLIENT_CONFIG['DELAY_AFTER_SCAN'])
 print(iface.scan_results())
 wifis = iface.scan_results()
 for wifi in wifis:
-    if("DOOR" in wifi.ssid):
+    if "DOOR" in wifi.ssid:
         profile = pywifi.Profile()
         profile.ssid = wifi.ssid
         profile.auth = const.AUTH_ALG_OPEN
@@ -33,7 +33,7 @@ for wifi in wifis:
         iface.connect(tmp_profile)
         time.sleep(CLIENT_CONFIG['DELAY_AFTER_CONNECT'])
 
-        if(iface.status() == const.IFACE_CONNECTED):
+        if iface.status() == const.IFACE_CONNECTED:
             print("Connected to " + wifi.ssid)
             try:
                 client_socket = socket.socket(
@@ -42,11 +42,11 @@ for wifi in wifis:
                     (CLIENT_CONFIG['HOST'], CLIENT_CONFIG['PORT']))
                 command = 1
                 user_logged = False
-                while(True):
-                    if(user_logged):
+                while True:
+                    if user_logged:
                         print("Write command:")
                         command = input()
-                        if(command == "exit"):
+                        if command == "exit":
                             break
                         client_socket.sendall(command.encode())
                         data = client_socket.recv(1024)
@@ -56,7 +56,7 @@ for wifi in wifis:
                         username = input()
                         client_socket.sendall(username.encode())
                         data = client_socket.recv(1024)
-                        if(data.decode() == "SUCCESS"):
+                        if data.decode() == "SUCCESS":
                             user_logged = True
                         print("Response: " + data.decode())
             except Exception as e:
