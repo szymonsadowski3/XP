@@ -4,11 +4,13 @@ import socket
 import network
 from src.configuration import USERS, ADMINS
 from src.persistence.MicroDatabaseAccess import MicroDatabaseAccess
+from src.business_logic.doorlock import MockedDoorLock
 
 HOST = '192.168.0.4'
 PORT = 8888
 LOGGED_USER = None
-databaseAccess = MicroDatabaseAccess()
+database_access = MicroDatabaseAccess()
+door_lock = MockedDoorLock()
 
 
 def start():
@@ -64,11 +66,12 @@ def setup_ap():
 
 
 def analyze_message(message):
-    global LOGGED_USER,databaseAccess
+    global LOGGED_USER,databaseAccess,door_lock
     temp = message.split(';')
     command = temp[0]
     if command == "OPEN":
         databaseAccess.add_log("Door opened by user: " + LOGGED_USER.username,"INFO")
+        door_lock.unlock()
         return "DOOR OPENED"
         
     elif command == "ADD_USER" and len(temp) > 1:
