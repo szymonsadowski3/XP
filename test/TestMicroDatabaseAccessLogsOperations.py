@@ -2,7 +2,7 @@ import sys
 import os
 import time
 
-from src.utils.utils import get_current_date
+from utils.utils import get_current_date
 
 sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "/../src")
 
