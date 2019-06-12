@@ -6,10 +6,12 @@ from models.User import User
 class MicroDatabaseAccess:
     id_sequence_current_value = 1
 
-    def __init__(self):
+    def __init__(self, admin_list=[]):
         self.users = []
         self.logs = []
-        self.users.append(User("Admin",0,True))
+        for admin in admin_list:
+            if isinstance(admin, User):
+                self.users.append(admin)
 
     def add_user(self, username_to_add, is_admin=False):
         id_to_assign = MicroDatabaseAccess.id_sequence_current_value
