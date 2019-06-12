@@ -1,4 +1,5 @@
 class User:
-    def __init__(self, username, card_id):
+    def __init__(self, username, user_id, is_admin=False):
         self.username = username
-        self.card_id = card_id
+        self.user_id = user_id
+        self.is_admin = is_admin
