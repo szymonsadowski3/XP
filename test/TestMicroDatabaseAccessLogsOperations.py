@@ -85,39 +85,6 @@ class TestMicroDatabaseAccessLogsOperations(unittest.TestCase):
             self.assertEqual(level_0, log.level)
             self.assertEqual(source2, log.source)
 
-    def test_searching_log_by_time_range(self):
-        level_0 = Log.log_levels[0]
-        source = "TestMicroDatabaseAccessLogsOperations.class"
-
-        batch1_logs = [
-            ("This is sample message 0", level_0, source),
-            ("This is sample message 1", level_0, source),
-        ]
-
-        batch2_logs = [
-            ("This is sample message 2", level_0, source),
-            ("This is sample message 3", level_0, source)
-        ]
-
-        before_insert_timestamp = get_current_date()
-
-        for log_message, info_log_level, source in batch1_logs:
-            self.database_access.add_log(log_message, info_log_level, source)
-
-        after_insert_timestamp = get_current_date()
-
-        time.sleep(1)
-
-        for log_message, info_log_level, source in batch2_logs:
-            self.database_access.add_log(log_message, info_log_level, source)
-
-        logs = self.database_access.get_all_logs_by_time_range(before_insert_timestamp, after_insert_timestamp)
-
-        for index, log in enumerate(logs):
-            self.assertEqual(batch1_logs[index][0], log.message)
-            self.assertEqual(level_0, log.level)
-            self.assertEqual(source, log.source)
-
 
 if __name__ == '__main__':
     unittest.main()
