@@ -88,6 +88,7 @@ class TestMicroDatabaseAccessUsersOperations(unittest.TestCase):
             self.assertEqual(username, user_from_db.username)
 
     def test_getting_all_users_when_no_users_in_db(self):
+        self.database_access.users = []
         self.assertEqual([], self.database_access.get_all_users())
 
     def test_getting_all_admins(self):
