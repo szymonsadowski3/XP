@@ -2,29 +2,40 @@ from src.models.User import User
 
 
 class MicroDatabaseAccess:
+    id_sequence_current_value = 0
+
     def __init__(self):
         self.users = []
 
     def add_user(self, username_to_add, is_admin=False):
-        return None
+        id_to_assign = MicroDatabaseAccess.id_sequence_current_value
+        user_to_add = User(username_to_add, id_to_assign, is_admin)
+        self.users.append(user_to_add)
+        MicroDatabaseAccess.id_sequence_current_value += 1
+        return id_to_assign
 
     def get_user_by_username(self, username):
-        return None
+        filtered_users = [user for user in self.users if user.username == username]
+
+        return filtered_users[0] if (len(filtered_users) > 0) else None
 
     def get_user_by_id(self, identifier):
-        return None
+        filtered_users = [user for user in self.users if user.user_id == identifier]
+
+        return filtered_users[0] if (len(filtered_users) > 0) else None
 
     def remove_user_by_username(self, username_of_user_to_remove):
-        return None
+        self.users = [user for user in self.users if user.username != username_of_user_to_remove]
 
     def remove_user_by_id(self, id_of_user_to_remove):
-        return None
+        self.users = [user for user in self.users if user.user_id != id_of_user_to_remove]
 
     def get_all_users(self):
-        return None
+        return self.users
 
     def get_all_admins(self):
-        return None
+        return [user for user in self.users if user.is_admin]
 
     def change_admin_rights_by_id(self, user_id, should_user_be_admin_now):
-        return None
+        user = self.get_user_by_id(user_id)
+        user.is_admin = should_user_be_admin_now
