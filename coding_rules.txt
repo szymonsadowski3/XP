@@ -9,9 +9,18 @@ Comments in english
 Files splitting
 =============
 
+
 One file per class
 Separate config to .py files
 Tests should be contained under separate "test" folders.
+
+
+Comments
+============
+Put comments when:
+- part of code is commented out
+- code is doing important thing
+
 
 Code Lay-out
 ============
@@ -29,6 +38,7 @@ arguments on the first line and further indentation should be used to
 clearly distinguish itself as a continuation line.
 
 Yes::
+
 
 # Aligned with opening delimiter.
 foo = long_function_name(var_one, var_two,
@@ -57,6 +67,7 @@ var_one, var_two, var_three,
 var_four):
 print(var_one)
 
+
 The 4-space rule is optional for continuation lines.
 
 Optional::
@@ -65,6 +76,7 @@ Optional::
 foo = long_function_name(
 var_one, var_two,
 var_three, var_four)
+
 
 .. _`multiline if-statements`:
 
@@ -78,6 +90,7 @@ which would also naturally be indented to 4 spaces.  This PEP takes no
 explicit position on how (or whether) to further visually distinguish such
 conditional lines from the nested suite inside the ``if``-statement.
 Acceptable options in this situation include, but are not limited to::
+
 
 # No extra indentation.
 if (this_is_one_thing and
@@ -96,12 +109,14 @@ if (this_is_one_thing
 and that_is_another_thing):
 do_something()
 
+
 (Also see the discussion of whether to break before or after binary
 operators below.)
 
 The closing brace/bracket/parenthesis on multiline constructs may
 either line up under the first non-whitespace character of the last
 line of list, as in::
+
 
 my_list = [
 1, 2, 3,
@@ -111,6 +126,7 @@ result = some_function_that_takes_arguments(
 'a', 'b', 'c',
 'd', 'e', 'f',
 )
+
 
 or it may be lined up under the first character of the line that
 starts the multiline construct, as in::
@@ -123,6 +139,7 @@ result = some_function_that_takes_arguments(
 'a', 'b', 'c',
 'd', 'e', 'f',
 )
+
 
 Tabs or Spaces?
 ---------------
@@ -179,6 +196,7 @@ for line continuation.
 Backslashes may still be appropriate at times.  For example, long,
 multiple ``with``-statements cannot use implicit continuation, so
 backslashes are acceptable::
+
 
 with open('/path/to/some/file/you/want/to/read') as file_1, \
 open('/path/to/some/file/being/written', 'w') as file_2:
@@ -350,6 +368,7 @@ will be overwritten isn't known in advance).
 When republishing names this way, the guidelines below regarding
 public and internal interfaces still apply.
 
+
 Module Level Dunder Names
 -------------------------
 
@@ -458,6 +477,7 @@ No::
 x             = 1
 y             = 2
 long_variable = 3
+
 
 Other Recommendations
 ---------------------
@@ -578,6 +598,7 @@ do_one(); do_two(); do_three(long, argument,
 if foo == 'blah': one(); two(); three()
 
 
+
 When to Use Trailing Commas
 ===========================
 
@@ -593,6 +614,7 @@ FILES = ('setup.cfg',)
 OK, but confusing::
 
 FILES = 'setup.cfg',
+
 
 When trailing commas are redundant, they are often helpful when a
 version control system is used, when a list of values, arguments or
@@ -671,6 +693,7 @@ But sometimes, this is useful::
 
 x = x + 1                 # Compensate for border
 
+
 Documentation Strings
 ---------------------
 
@@ -693,6 +716,7 @@ Optional plotz says to frobnicate the bizbaz first.
 
 - For one liner docstrings, please keep the closing ``"""`` on
 the same line.
+
 
 
 Naming Conventions
@@ -735,6 +759,7 @@ letters of the acronym.  Thus HTTPServerError is better than
 HttpServerError.
 - ``mixedCase`` (differs from CapitalizedWords by initial lowercase
 character!)
+
 - ``Capitalized_Words_With_Underscores`` (ugly!)
 
 There's also the style of using a short unique prefix to group related
@@ -1280,6 +1305,7 @@ Yes:   if greeting:
 No:    if greeting == True:
 Worse: if greeting is True:
 
+
 Function Annotations
 --------------------
 
@@ -1328,6 +1354,7 @@ the library author's permission) through the typeshed repo [5]_.
 can be added in the form of comments.  See the relevant section of
 PEP 484 [6]_.
 
+
 Variable Annotations
 --------------------
 
@@ -1336,6 +1363,7 @@ similar to those on function annotations described above:
 
 - Annotations for module level variables, class and instance variables,
 and local variables should have a single space after the colon.
+
 
 - There should be no space before the colon.
 
