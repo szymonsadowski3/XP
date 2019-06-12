@@ -1,7 +1,7 @@
 import utime
 
-from src.models.Log import Log
-from src.models.User import User
+from models.Log import Log
+from models.User import User
 
 class MicroDatabaseAccess:
     id_sequence_current_value = 1

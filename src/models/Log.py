@@ -1,4 +1,4 @@
-from src.utils.utils import get_current_date
+from utils.utils import get_current_date
 
 
 class Log:
