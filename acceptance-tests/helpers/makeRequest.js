@@ -10,7 +10,7 @@ async function makeRequest(payload, host, port) {
         client.connect(port || PORT, host || HOST, function () {
             console.log('Connected.');
 
-            client.write(payload, err => {
+            client.write(JSON.stringify(payload), err => {
                 if (err) { console.log(err); }
 
                 client.on('data', function (data) {

@@ -11,8 +11,31 @@ Test
 |import      |
 |server-tests|
 
+When user is not logged in
 |xp.Server       |
-|command 		 |response?  |
-|Bob  	 		 |[echo] Bob |
-|sayhi:Bob  	 |Hi! Bob    |
+|command 		 |	response?  |
+|OPEN;999	  	 |ACCESS DENIED|
+|echo  	 		 |COMMAND NOT FOUND : echo|
+
+
+
+When user is logged in
+|xp.Server       |
+|command 		 |	response?  |
+|LOGIN;1	  	 |SUCCESS|
+|echo  	 		 |COMMAND NOT FOUND : echo|
+|OPEN;1	  	 |DOOR OPENED|
+|LOGOUT	  	 |SUCCESS|
+
+
+When user is logged in
+#|xp.Server       |
+#|command 		 |	response?  |
+#|1	  	 |SUCCESS|
+#|OPEN;1	  	 |DOOR OPENED|
+#|echo  	 		 |COMMAND NOT FOUND : echo|
+#|OPEN;1  	 	|DOOR OPENED |
+#|ADD_USER;999  	 |ACCESS DENIED OR USER ALREADY IN DATABASE|
+#|REMOVE_USER;999  	 |ACCESS DENIED OR USER DONT EXISTS IN DATABASE|
+
 
