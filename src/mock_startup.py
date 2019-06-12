@@ -2,12 +2,15 @@ import machine
 import time
 import socket
 import network
+from src.configuration import USERS, ADMINS
 
 HOST = '192.168.0.4'
 PORT = 8888
+LOGGED_USER = None
 
 
 def start():
+    global LOGGED_USER
     ap_if = setupAP()
 
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -19,6 +22,8 @@ def start():
 
     while True:
         print(ap_if.isconnected())
+        LOGGED_USER = None
+        time.sleep(1)
         if(ap_if.isconnected()):
             try:
                 conn, addr = server_socket.accept()
@@ -26,13 +31,12 @@ def start():
                 while True:
                     data = conn.recv(1024)
                     if not data:
-                        break
-                    print(data.decode())
-                    conn.sendall(b'Door opened.')
-                    pin.on()
-                    time.sleep(2)
-                    pin.off()
-                    break
+                        continue
+                    if(LOGGED_USER != None):
+                        response = analyzeMessage(data.decode())
+                    else:
+                        response = login(data)
+                    conn.sendall(response.encode())
             except Exception as e:
                 print(str(e))
                 continue
@@ -55,3 +59,39 @@ def setupAP():
     print("AP state = " + str(ap_if.active()))
 
     return ap_if
+
+
+def analyzeMessage(message):
+    temp = message.split(';')
+    command = temp[0]
+    if(command == "OPEN"):
+        if(int(LOGGED_USER) in (USERS or ADMINS)):
+            return("DOOR OPENED")
+        else:
+            return("ACCESS DENIED")
+
+    elif(command == "ADD_USER"):
+        if(int(LOGGED_USER) in ADMINS and int(temp[1]) not in USERS):
+            USERS.append(int(temp[1]))
+            return("USER ADDED")
+        else:
+            return("ACCESS DENIED OR USER ALREADY IN DATABASE")
+
+    elif(command == "REMOVE_USER"):
+        if(int(LOGGED_USER) in ADMINS and int(temp[1]) in USERS):
+            USERS.remove(int(temp[1]))
+            return("USER REMOVED")
+        else:
+            return("ACCESS DENIED OR USER DONT EXISTS IN DATABASE")
+
+    else:
+        return("COMMAND NOT FOUND : " + command)
+
+
+def login(user):
+    global LOGGED_USER
+    if(int(user) in (USERS or ADMINS)):
+        LOGGED_USER = user
+        return "SUCCESS"
+    else:
+        return "FAILED"
