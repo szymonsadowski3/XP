@@ -66,26 +66,29 @@ def setup_ap():
 
 
 def analyze_message(message):
-    global LOGGED_USER,databaseAccess,door_lock
+    global LOGGED_USER, database_access, door_lock
     temp = message.split(';')
     command = temp[0]
     if command == "OPEN":
-        databaseAccess.add_log("Door opened by user: " + LOGGED_USER.username,"INFO")
+        database_access.add_log("Door opened by user: " +
+                                LOGGED_USER.username, "INFO")
         door_lock.unlock()
         return "DOOR OPENED"
-        
+
     elif command == "ADD_USER" and len(temp) > 1:
         if LOGGED_USER.is_admin:
-            databaseAccess.add_user(temp[1])
-            databaseAccess.add_log("Added user: " + str(temp[1]) + " by: " + LOGGED_USER.username)
+            database_access.add_user(temp[1])
+            database_access.add_log(
+                "Added user: " + str(temp[1]) + " by: " + LOGGED_USER.username)
             return "USER ADDED"
         else:
             return "ACCESS DENIED"
 
     elif command == "REMOVE_USER" and len(temp) > 1:
         if LOGGED_USER.is_admin:
-            databaseAccess.remove_user_by_username(temp[1])
-            databaseAccess.add_log("Removed user: " + str(temp[1]) + " by: " + LOGGED_USER.username)
+            database_access.remove_user_by_username(temp[1])
+            database_access.add_log(
+                "Removed user: " + str(temp[1]) + " by: " + LOGGED_USER.username)
             return "USER REMOVED"
         else:
             return "ACCESS DENIED"
@@ -93,12 +96,13 @@ def analyze_message(message):
     elif command == "GET_ALL_LOGS":
         if LOGGED_USER.is_admin:
             string_to_send = ""
-            logs = databaseAccess.get_all_logs()
+            logs = database_access.get_all_logs()
             print(str(logs))
             for log in logs:
-                string_to_send += str(log.message) + " " + str(log.level) + " " + str(log.source) + " " + str(log.timestamp) + "\n"
-                
-            databaseAccess.add_log("All logs get by: " + LOGGED_USER.username)
+                string_to_send += str(log.message) + " " + str(log.level) + \
+                    " " + str(log.source) + " " + str(log.timestamp) + "\n"
+
+            database_access.add_log("All logs get by: " + LOGGED_USER.username)
             return string_to_send
         else:
             return "ACCESS DENIED"
@@ -107,8 +111,8 @@ def analyze_message(message):
 
 
 def identify(user):
-    global LOGGED_USER,databaseAccess
-    LOGGED_USER = databaseAccess.get_user_by_username(user)
+    global LOGGED_USER, databaseAccess
+    LOGGED_USER = database_access.get_user_by_username(user)
     if LOGGED_USER != None:
         return "SUCCESS"
     else:
