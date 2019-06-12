@@ -5,11 +5,12 @@ import network
 from src.configuration import USERS, ADMINS
 from src.persistence.MicroDatabaseAccess import MicroDatabaseAccess
 from src.business_logic.doorlock import MockedDoorLock
+from src.models.User import User
 
 HOST = '192.168.0.4'
 PORT = 8888
 LOGGED_USER = None
-database_access = MicroDatabaseAccess()
+database_access = MicroDatabaseAccess([User("Admin", 0, True)])
 door_lock = MockedDoorLock()
 
 
