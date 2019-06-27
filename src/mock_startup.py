@@ -32,19 +32,20 @@ def start():
             try:
                 conn, addr = server_socket.accept()
                 print('Connected by', addr)
-                while True:
+                while conn:
                     data = conn.recv(1024)
                     if not data:
-                        continue
+                        break
                     if LOGGED_USER is not None:
+                        print("Anlizing message")
                         response = analyze_message(data.decode())
                     else:
+                        print("Trying to log in...")
                         response = identify(data.decode())
                     conn.sendall(response.encode())
             except Exception as e:
                 print(str(e))
                 continue
-                time.sleep(1)
 
 
 def setup_ap():
@@ -107,6 +108,7 @@ def analyze_message(message):
     command = temp[0]
     if command == "OPEN":
         databaseAccess.add_log("Door opened by user: " + LOGGED_USER.username,"INFO")
+        print("DOOR OPENED")
         return "DOOR OPENED"
         
 
@@ -114,12 +116,14 @@ def analyze_message(message):
         if command == "ADD_USER" and len(temp) > 1:
                 databaseAccess.add_user(temp[1])
                 databaseAccess.add_log("Added user: " + str(temp[1]) + " by: " + LOGGED_USER.username)
+                print("USER ADDED")
                 return "USER ADDED"
             
 
         elif command == "REMOVE_USER" and len(temp) > 1:
                 databaseAccess.remove_user_by_username(temp[1])
                 databaseAccess.add_log("Removed user: " + str(temp[1]) + " by: " + LOGGED_USER.username)
+                print("USER REMOVED")
                 return "USER REMOVED"
 
 
@@ -127,32 +131,42 @@ def analyze_message(message):
                 string_to_send = ""
                 logs = databaseAccess.get_all_logs()
                 print(str(logs))
-                for log in logs:
-                    string_to_send += str(log.message) + " " + str(log.level) + " " + str(log.source) + " " + str(log.timestamp) + "\n"
-                    
+
+                if len(logs) == 0:
+                    string_to_send = "NO LOGS"
+                else:
+                    for log in logs:
+                        string_to_send += str(log.message) + " " + str(log.level) + " " + str(log.source) + " " + str(log.timestamp) + "\n"
+                  
                 databaseAccess.add_log("All logs get by: " + LOGGED_USER.username)
                 return string_to_send
 
         elif command == "PASSWORD_CHANGE":
             if(len(temp) < 2):
+                print("NOT ENOUGH ARGS")
                 return "NOT ENOUGH ARGS"
 
             if(temp[1] != readConfig("PASSWORD")):
+                print("PASSWORD MISMATCH")
                 return "PASSWORD MISMATCH"
 
             changePassword(temp[2])
+            print("PASSWORD CHANGED")
             return "PASSWORD CHANGED"
 
         elif command == "CONFIG":
             if(len(temp) < 2):
+                print("NOT ENOUGH ARGS")
                 return "NOT ENOUGH ARGS"
 
             return changeConfig(temp[1],temp[2])
 
         elif command == "SHOW_CONFIG":
+            print(showConfig())
             return showConfig()
 
     else:
+        print("ACCESS_DENIED")
         return "ACCESS_DENIED"
             
 
@@ -163,6 +177,8 @@ def identify(user):
     global LOGGED_USER,databaseAccess
     LOGGED_USER = databaseAccess.get_user_by_username(user)
     if LOGGED_USER != None:
+        print("SUCCESS")
         return "SUCCESS"
     else:
+        print("FAILED")
         return "FAILED"

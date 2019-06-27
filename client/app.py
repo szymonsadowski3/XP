@@ -20,6 +20,7 @@ print(iface.scan_results())
 wifis = iface.scan_results()
 for wifi in wifis:
     if "DOOR" in wifi.ssid:
+        
         profile = pywifi.Profile()
         profile.ssid = wifi.ssid
         profile.auth = const.AUTH_ALG_OPEN
@@ -46,6 +47,7 @@ for wifi in wifis:
                         print("Write command:")
                         command = input()
                         if command == "exit":
+                            client_socket.close()
                             break
                         client_socket.sendall(command.encode())
                         data = client_socket.recv(1024)
@@ -54,6 +56,7 @@ for wifi in wifis:
                         print("User: ")
                         username = input()
                         if username == "exit":
+                            client_socket.close()
                             break
                         client_socket.sendall(username.encode())
                         data = client_socket.recv(1024)
@@ -62,4 +65,5 @@ for wifi in wifis:
                         print("Response: " + data.decode())
             except Exception as e:
                 print(e)
-            iface.disconnect()
+                client_socket.close()
+                iface.disconnect()
