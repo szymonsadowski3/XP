@@ -27,7 +27,6 @@ for wifi in wifis:
         profile.cipher = const.CIPHER_TYPE_CCMP
         profile.key = CLIENT_CONFIG['PROFILE_KEY']
 
-        iface.remove_all_network_profiles()
         tmp_profile = iface.add_network_profile(profile)
 
         iface.connect(tmp_profile)
@@ -54,6 +53,8 @@ for wifi in wifis:
                     else:
                         print("User: ")
                         username = input()
+                        if username == "exit":
+                            break
                         client_socket.sendall(username.encode())
                         data = client_socket.recv(1024)
                         if data.decode() == "SUCCESS":

@@ -2,12 +2,14 @@ import machine
 import time
 import socket
 import network
-from src.configuration import USERS, ADMINS
+import ujson
+
 from src.persistence.MicroDatabaseAccess import MicroDatabaseAccess
 
 HOST = '192.168.0.4'
 PORT = 8888
 LOGGED_USER = None
+PASSWORD = '123456789'
 databaseAccess = MicroDatabaseAccess()
 
 
@@ -48,12 +50,12 @@ def start():
 def setup_ap():
     ap_if = network.WLAN(network.AP_IF)
 
-    ap_if.config(essid="DOOR 1")
+    ap_if.config(essid=readConfig("SSID"))
     print(ap_if.config('essid'))
 
     ap_if.config(authmode=network.AUTH_WPA_WPA2_PSK)
-    ap_if.config(password='123456789')
-    ap_if.ifconfig(('192.168.0.4', '255.255.255.0', '192.168.0.1', '8.8.8.8'))
+    ap_if.config(password=readConfig("PASSWORD"))
+    ap_if.ifconfig((readConfig("IP"), '255.255.255.0', '192.168.0.1', '8.8.8.8'))
     print(ap_if.ifconfig())
 
     ap_if.active(True)
@@ -62,6 +64,42 @@ def setup_ap():
 
     return ap_if
 
+def readConfig(key):
+    f = open('src/configuration.json','r')
+    json_data = ujson.load(f)
+    f.close()
+    return json_data[key]
+
+
+
+def changePassword(newPass):
+    f = open('src/configuration.json','r')
+    json_data = ujson.load(f)
+    f.close()
+    f = open('src/configuration.json','w')
+    json_data['PASSWORD'] = newPass
+    ujson.dump(json_data,f)
+    f.close()
+
+def changeConfig(key,value):
+    f = open('src/configuration.json','r')
+    json_data = ujson.load(f)
+    f.close()
+    
+    if key in json_data:
+        json_data[key] = value
+        f = open('src/configuration.json','w')
+        ujson.dump(json_data,f)
+        f.close()
+        return "CONFIG " + key + " CHANGED"
+    else:
+        return "CONFIG " + key + " DOES NOT EXIST"
+
+def showConfig():
+    f = open('src/configuration.json','r')
+    json_data = ujson.load(f)
+    f.close()
+    return str(json_data)
 
 def analyze_message(message):
     global LOGGED_USER,databaseAccess
@@ -71,36 +109,54 @@ def analyze_message(message):
         databaseAccess.add_log("Door opened by user: " + LOGGED_USER.username,"INFO")
         return "DOOR OPENED"
         
-    elif command == "ADD_USER" and len(temp) > 1:
-        if LOGGED_USER.is_admin:
-            databaseAccess.add_user(temp[1])
-            databaseAccess.add_log("Added user: " + str(temp[1]) + " by: " + LOGGED_USER.username)
-            return "USER ADDED"
-        else:
-            return "ACCESS DENIED"
 
-    elif command == "REMOVE_USER" and len(temp) > 1:
-        if LOGGED_USER.is_admin:
-            databaseAccess.remove_user_by_username(temp[1])
-            databaseAccess.add_log("Removed user: " + str(temp[1]) + " by: " + LOGGED_USER.username)
-            return "USER REMOVED"
-        else:
-            return "ACCESS DENIED"
+    if LOGGED_USER.is_admin:
+        if command == "ADD_USER" and len(temp) > 1:
+                databaseAccess.add_user(temp[1])
+                databaseAccess.add_log("Added user: " + str(temp[1]) + " by: " + LOGGED_USER.username)
+                return "USER ADDED"
+            
 
-    elif command == "GET_ALL_LOGS":
-        if LOGGED_USER.is_admin:
-            string_to_send = ""
-            logs = databaseAccess.get_all_logs()
-            print(str(logs))
-            for log in logs:
-                string_to_send += str(log.message) + " " + str(log.level) + " " + str(log.source) + " " + str(log.timestamp) + "\n"
-                
-            databaseAccess.add_log("All logs get by: " + LOGGED_USER.username)
-            return string_to_send
-        else:
-            return "ACCESS DENIED"
+        elif command == "REMOVE_USER" and len(temp) > 1:
+                databaseAccess.remove_user_by_username(temp[1])
+                databaseAccess.add_log("Removed user: " + str(temp[1]) + " by: " + LOGGED_USER.username)
+                return "USER REMOVED"
+
+
+        elif command == "GET_ALL_LOGS":
+                string_to_send = ""
+                logs = databaseAccess.get_all_logs()
+                print(str(logs))
+                for log in logs:
+                    string_to_send += str(log.message) + " " + str(log.level) + " " + str(log.source) + " " + str(log.timestamp) + "\n"
+                    
+                databaseAccess.add_log("All logs get by: " + LOGGED_USER.username)
+                return string_to_send
+
+        elif command == "PASSWORD_CHANGE":
+            if(len(temp) < 2):
+                return "NOT ENOUGH ARGS"
+
+            if(temp[1] != readConfig("PASSWORD")):
+                return "PASSWORD MISMATCH"
+
+            changePassword(temp[2])
+            return "PASSWORD CHANGED"
+
+        elif command == "CONFIG":
+            if(len(temp) < 2):
+                return "NOT ENOUGH ARGS"
+
+            return changeConfig(temp[1],temp[2])
+
+        elif command == "SHOW_CONFIG":
+            return showConfig()
+
     else:
-        return "COMMAND NOT FOUND : " + command
+        return "ACCESS_DENIED"
+            
+
+    return "COMMAND NOT FOUND : " + command
 
 
 def identify(user):
