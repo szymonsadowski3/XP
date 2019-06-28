@@ -104,8 +104,8 @@ def showConfig():
 
 def analyze_message(message):
     global LOGGED_USER,databaseAccess
-    temp = message.split(';')
-    command = temp[0]
+    command_arguments = message.split(';')
+    command = command_arguments[0]
     if command == "OPEN":
         databaseAccess.add_log("Door opened by user: " + LOGGED_USER.username,"INFO")
         print("DOOR OPENED")
@@ -113,16 +113,16 @@ def analyze_message(message):
         
 
     if LOGGED_USER.is_admin:
-        if command == "ADD_USER" and len(temp) > 1:
-                databaseAccess.add_user(temp[1])
-                databaseAccess.add_log("Added user: " + str(temp[1]) + " by: " + LOGGED_USER.username)
-                print("USER ADDED")
-                return "USER ADDED"
+        if command == "ADD_USER" and len(command_arguments) > 1:
+            databaseAccess.add_user(command_arguments[1])
+            databaseAccess.add_log("Added user: " + str(command_arguments[1]) + " by: " + LOGGED_USER.username)
+            print("USER ADDED")
+            return "USER ADDED"
             
 
-        elif command == "REMOVE_USER" and len(temp) > 1:
-                databaseAccess.remove_user_by_username(temp[1])
-                databaseAccess.add_log("Removed user: " + str(temp[1]) + " by: " + LOGGED_USER.username)
+        elif command == "REMOVE_USER" and len(command_arguments) > 1:
+                databaseAccess.remove_user_by_username(command_arguments[1])
+                databaseAccess.add_log("Removed user: " + str(command_arguments[1]) + " by: " + LOGGED_USER.username)
                 print("USER REMOVED")
                 return "USER REMOVED"
 
@@ -142,24 +142,24 @@ def analyze_message(message):
                 return string_to_send
 
         elif command == "PASSWORD_CHANGE":
-            if(len(temp) < 2):
+            if(len(command_arguments) < 2):
                 print("NOT ENOUGH ARGS")
                 return "NOT ENOUGH ARGS"
 
-            if(temp[1] != readConfig("PASSWORD")):
+            if(command_arguments[1] != readConfig("PASSWORD")):
                 print("PASSWORD MISMATCH")
                 return "PASSWORD MISMATCH"
 
-            changePassword(temp[2])
+            changePassword(command_arguments[2])
             print("PASSWORD CHANGED")
             return "PASSWORD CHANGED"
 
         elif command == "CONFIG":
-            if(len(temp) < 2):
+            if(len(command_arguments) < 2):
                 print("NOT ENOUGH ARGS")
                 return "NOT ENOUGH ARGS"
 
-            return changeConfig(temp[1],temp[2])
+            return changeConfig(command_arguments[1],command_arguments[2])
 
         elif command == "SHOW_CONFIG":
             print(showConfig())
