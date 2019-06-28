@@ -4,6 +4,7 @@ import socket
 import network
 import ujson
 
+from src.commands import get_command
 from src.persistence.MicroDatabaseAccess import MicroDatabaseAccess
 
 HOST = '192.168.0.4'
@@ -106,72 +107,10 @@ def analyze_message(message):
     global LOGGED_USER,databaseAccess
     command_arguments = message.split(';')
     command = command_arguments[0]
-    if command == "OPEN":
-        databaseAccess.add_log("Door opened by user: " + LOGGED_USER.username,"INFO")
-        print("DOOR OPENED")
-        return "DOOR OPENED"
-        
 
-    if LOGGED_USER.is_admin:
-        if command == "ADD_USER" and len(command_arguments) > 1:
-            databaseAccess.add_user(command_arguments[1])
-            databaseAccess.add_log("Added user: " + str(command_arguments[1]) + " by: " + LOGGED_USER.username)
-            print("USER ADDED")
-            return "USER ADDED"
-            
+    args = [LOGGED_USER, databaseAccess, command_arguments, readConfig, changePassword, showConfig]
 
-        elif command == "REMOVE_USER" and len(command_arguments) > 1:
-                databaseAccess.remove_user_by_username(command_arguments[1])
-                databaseAccess.add_log("Removed user: " + str(command_arguments[1]) + " by: " + LOGGED_USER.username)
-                print("USER REMOVED")
-                return "USER REMOVED"
-
-
-        elif command == "GET_ALL_LOGS":
-                string_to_send = ""
-                logs = databaseAccess.get_all_logs()
-                print(str(logs))
-
-                if len(logs) == 0:
-                    string_to_send = "NO LOGS"
-                else:
-                    for log in logs:
-                        string_to_send += str(log.message) + " " + str(log.level) + " " + str(log.source) + " " + str(log.timestamp) + "\n"
-                  
-                databaseAccess.add_log("All logs get by: " + LOGGED_USER.username)
-                return string_to_send
-
-        elif command == "PASSWORD_CHANGE":
-            if(len(command_arguments) < 2):
-                print("NOT ENOUGH ARGS")
-                return "NOT ENOUGH ARGS"
-
-            if(command_arguments[1] != readConfig("PASSWORD")):
-                print("PASSWORD MISMATCH")
-                return "PASSWORD MISMATCH"
-
-            changePassword(command_arguments[2])
-            print("PASSWORD CHANGED")
-            return "PASSWORD CHANGED"
-
-        elif command == "CONFIG":
-            if(len(command_arguments) < 2):
-                print("NOT ENOUGH ARGS")
-                return "NOT ENOUGH ARGS"
-
-            return changeConfig(command_arguments[1],command_arguments[2])
-
-        elif command == "SHOW_CONFIG":
-            print(showConfig())
-            return showConfig()
-
-    else:
-        print("ACCESS_DENIED")
-        return "ACCESS_DENIED"
-            
-
-    return "COMMAND NOT FOUND : " + command
-
+    return get_command(command, *args).execute()
 
 def identify(user):
     global LOGGED_USER,databaseAccess
