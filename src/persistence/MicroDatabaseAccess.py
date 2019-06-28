@@ -1,4 +1,4 @@
-import utime
+import time
 
 from src.models.Log import Log
 from src.models.User import User
@@ -6,10 +6,13 @@ from src.models.User import User
 class MicroDatabaseAccess:
     id_sequence_current_value = 1
 
-    def __init__(self):
+    def __init__(self, user_list=[]):
         self.users = []
         self.logs = []
-        self.users.append(User("Admin",0,True))
+
+        for user in user_list:
+            if isinstance(user, User):
+                self.users.append(user)
 
     def add_user(self, username_to_add, is_admin=False):
         id_to_assign = MicroDatabaseAccess.id_sequence_current_value
