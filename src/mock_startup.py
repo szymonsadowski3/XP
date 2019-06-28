@@ -3,6 +3,7 @@ import time
 import socket
 import network
 import ujson
+from src.models import User
 
 from src.persistence.MicroDatabaseAccess import MicroDatabaseAccess
 
@@ -10,7 +11,8 @@ HOST = '192.168.0.4'
 PORT = 8888
 LOGGED_USER = None
 PASSWORD = '123456789'
-databaseAccess = MicroDatabaseAccess()
+initial_users = [User("Admin",0,True)]
+databaseAccess = MicroDatabaseAccess(initial_users)
 
 
 def start():

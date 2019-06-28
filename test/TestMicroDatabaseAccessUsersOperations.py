@@ -2,8 +2,8 @@ import sys
 import os
 sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "/../src")
 
-from persistence.MicroDatabaseAccess import MicroDatabaseAccess
-from models.User import User
+from src.persistence.MicroDatabaseAccess import MicroDatabaseAccess
+from src.models.User import User
 import unittest
 import string
 import random
@@ -88,6 +88,7 @@ class TestMicroDatabaseAccessUsersOperations(unittest.TestCase):
             self.assertEqual(username, user_from_db.username)
 
     def test_getting_all_users_when_no_users_in_db(self):
+        self.database_access = MicroDatabaseAccess()
         self.assertEqual([], self.database_access.get_all_users())
 
     def test_getting_all_admins(self):
