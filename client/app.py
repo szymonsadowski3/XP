@@ -19,7 +19,8 @@ time.sleep(CLIENT_CONFIG['DELAY_AFTER_SCAN'])
 print(iface.scan_results())
 wifis = iface.scan_results()
 for wifi in wifis:
-    if("DOOR" in wifi.ssid):
+    if "DOOR" in wifi.ssid:
+        
         profile = pywifi.Profile()
         profile.ssid = wifi.ssid
         profile.auth = const.AUTH_ALG_OPEN
@@ -27,13 +28,12 @@ for wifi in wifis:
         profile.cipher = const.CIPHER_TYPE_CCMP
         profile.key = CLIENT_CONFIG['PROFILE_KEY']
 
-        iface.remove_all_network_profiles()
         tmp_profile = iface.add_network_profile(profile)
 
         iface.connect(tmp_profile)
         time.sleep(CLIENT_CONFIG['DELAY_AFTER_CONNECT'])
 
-        if(iface.status() == const.IFACE_CONNECTED):
+        if iface.status() == const.IFACE_CONNECTED:
             print("Connected to " + wifi.ssid)
             try:
                 client_socket = socket.socket(
@@ -42,11 +42,12 @@ for wifi in wifis:
                     (CLIENT_CONFIG['HOST'], CLIENT_CONFIG['PORT']))
                 command = 1
                 user_logged = False
-                while(True):
-                    if(user_logged):
+                while True:
+                    if user_logged:
                         print("Write command:")
                         command = input()
-                        if(command == "exit"):
+                        if command == "exit":
+                            client_socket.close()
                             break
                         client_socket.sendall(command.encode())
                         data = client_socket.recv(1024)
@@ -54,11 +55,15 @@ for wifi in wifis:
                     else:
                         print("User: ")
                         username = input()
+                        if username == "exit":
+                            client_socket.close()
+                            break
                         client_socket.sendall(username.encode())
                         data = client_socket.recv(1024)
-                        if(data.decode() == "SUCCESS"):
+                        if data.decode() == "SUCCESS":
                             user_logged = True
                         print("Response: " + data.decode())
             except Exception as e:
                 print(e)
-            iface.disconnect()
+                client_socket.close()
+                iface.disconnect()
