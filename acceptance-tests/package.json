@@ -11,7 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "node-wifi": "^2.0.5",
+    "node-wifi": "^2.0.12",
     "slimjs": "^2.1.4"
   }
 }
